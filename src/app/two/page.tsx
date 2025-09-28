@@ -3,6 +3,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform, useAnimation } from 'framer-motion';
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  featured: boolean;
+  rating: number;
+  reviews: number;
+  tier: string;
+  specs: string;
+}
+
+interface MousePosition {
+  x: number;
+  y: number;
+}
+
 const products = [
   { id: 1, name: "Elite Gaming Setup", description: "Professional gaming workstation with RGB lighting", price: "$2,499", featured: true, rating: 4.9, reviews: 1247, tier: "ELITE", specs: "RTX 4090 | 64GB RAM | 2TB SSD" },
   { id: 2, name: "Titanium Smartwatch", description: "Premium wearable with advanced health monitoring", price: "$899", featured: false, rating: 4.8, reviews: 892, tier: "PRO", specs: "7-day battery | GPS | Health sensors" },
@@ -27,11 +44,11 @@ const heroImages = [
 
 export default function BoldPremiumStore() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [hoveredProduct, setHoveredProduct] = useState(null);
-  const [selectedTier, setSelectedTier] = useState('ALL');
-  const [cartItems, setCartItems] = useState([]);
-  const [isMatrixEffect, setIsMatrixEffect] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [hoveredProduct, setHoveredProduct] = useState<number | string | null>(null);
+  const [selectedTier, setSelectedTier] = useState<string>('ALL');
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+  const [isMatrixEffect, setIsMatrixEffect] = useState<boolean>(false);
+  const [mousePosition, setMousePosition] = useState<MousePosition>({ x: 0, y: 0 });
   const featuredRef = useRef(null);
   const controls = useAnimation();
   const { scrollYProgress } = useScroll();
@@ -46,7 +63,7 @@ export default function BoldPremiumStore() {
     setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   };
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     setCartItems(prev => [...prev, product]);
     setIsMatrixEffect(true);
     setTimeout(() => setIsMatrixEffect(false), 2000);
@@ -64,7 +81,7 @@ export default function BoldPremiumStore() {
   }, []);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener('mousemove', handleMouseMove);

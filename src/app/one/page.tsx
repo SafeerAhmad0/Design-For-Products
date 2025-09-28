@@ -3,6 +3,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  featured: boolean;
+  rating: number;
+  reviews: number;
+  category: string;
+}
+
 const products = [
   { id: 1, name: "Cozy Reading Chair", description: "Perfect for your favorite corner", price: "$349", featured: true, rating: 4.9, reviews: 156, category: "furniture" },
   { id: 2, name: "Wooden Coffee Table", description: "Handcrafted from sustainable oak", price: "$289", featured: false, rating: 4.8, reviews: 89, category: "furniture" },
@@ -27,10 +38,10 @@ const heroImages = [
 
 export default function WarmLifestyleStore() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [hoveredProduct, setHoveredProduct] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [cartItems, setCartItems] = useState([]);
-  const [isFloating, setIsFloating] = useState(false);
+  const [hoveredProduct, setHoveredProduct] = useState<number | string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+  const [isFloating, setIsFloating] = useState<boolean>(false);
   const featuredRef = useRef(null);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
@@ -44,7 +55,7 @@ export default function WarmLifestyleStore() {
     setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   };
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     setCartItems(prev => [...prev, product]);
     setIsFloating(true);
     setTimeout(() => setIsFloating(false), 1000);

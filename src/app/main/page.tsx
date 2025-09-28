@@ -3,6 +3,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  featured: boolean;
+  rating: number;
+  reviews: number;
+}
+
 const products = [
   { id: 1, name: "Modern Office Chair", description: "Ergonomic design with premium comfort", price: "$299", featured: true, rating: 4.9, reviews: 234 },
   { id: 2, name: "Wireless Headphones", description: "Premium sound quality with noise cancellation", price: "$199", featured: false, rating: 4.7, reviews: 189 },
@@ -26,8 +36,8 @@ const heroImages = [
 
 export default function PolishedMinimalStore() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [hoveredProduct, setHoveredProduct] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
+  const [hoveredProduct, setHoveredProduct] = useState<number | string | null>(null);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
   const featuredRef = useRef(null);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
@@ -40,7 +50,7 @@ export default function PolishedMinimalStore() {
     setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   };
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     setCartItems(prev => [...prev, product]);
   };
 
