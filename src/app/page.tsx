@@ -152,7 +152,12 @@ export default function Home() {
               className="px-8 py-4 bg-gray-900 text-white font-medium rounded-none hover:bg-gray-800 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => document.getElementById('themes').scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => {
+                const element = document.getElementById('themes');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             >
               Explore Themes
             </motion.button>
