@@ -208,7 +208,7 @@ export default function PolishedMinimalStore() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -10, scale: 1.02 }}
+                whileHover={{ scale: 1.01 }}
                 onMouseEnter={() => setHoveredProduct(`featured-${product.id}`)}
                 onMouseLeave={() => setHoveredProduct(null)}
               >
@@ -350,7 +350,7 @@ export default function PolishedMinimalStore() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true, margin: "-100px" }}
-              whileHover={{ y: -8, scale: 1.02 }}
+              whileHover={{ scale: 1.01 }}
               onMouseEnter={() => setHoveredProduct(product.id)}
               onMouseLeave={() => setHoveredProduct(null)}
             >

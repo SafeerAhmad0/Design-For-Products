@@ -307,7 +307,7 @@ export default function WarmLifestyleStore() {
                 whileInView={{ opacity: 1, x: 0, rotate: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.3 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -15, scale: 1.03, rotate: 1 }}
+                whileHover={{ scale: 1.01 }}
                 onMouseEnter={() => setHoveredProduct(`featured-${product.id}`)}
                 onMouseLeave={() => setHoveredProduct(null)}
               >
@@ -516,7 +516,7 @@ export default function WarmLifestyleStore() {
                 initial={{ opacity: 0, y: 50, rotate: 2 }}
                 animate={{ opacity: 1, y: 0, rotate: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -12, scale: 1.03, rotate: 1 }}
+                whileHover={{ scale: 1.01 }}
                 onMouseEnter={() => setHoveredProduct(product.id)}
                 onMouseLeave={() => setHoveredProduct(null)}
                 layout

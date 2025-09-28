@@ -536,8 +536,6 @@ export default function BoldPremiumStore() {
                 transition={{ duration: 1, delay: index * 0.3 }}
                 viewport={{ once: true }}
                 whileHover={{
-                  y: -20,
-                  scale: 1.05,
                   boxShadow: '0 30px 60px rgba(255, 215, 0, 0.3)',
                   borderColor: '#FFD700'
                 }}
@@ -815,8 +813,6 @@ export default function BoldPremiumStore() {
                 animate={{ opacity: 1, x: 0, rotateY: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
                 whileHover={{
-                  y: -15,
-                  scale: 1.02,
                   boxShadow: '0 30px 60px rgba(255, 215, 0, 0.3)',
                   borderColor: '#FFD700'
                 }}
