@@ -53,6 +53,26 @@ const themes = [
     textColor: 'text-yellow-400',
     accentColor: 'bg-yellow-400',
     preview: 'https://via.placeholder.com/400x300/1a1a1a/FFD700?text=Bold+Premium'
+  },
+  {
+    id: 'three',
+    title: 'Editorial & Magazine',
+    description: 'Sophisticated editorial layout with clean typography and magazine-style presentation. Perfect for content-focused brands.',
+    features: ['Editorial Layout', 'Magazine Design', 'Typography Focus', 'Content First'],
+    color: 'from-gray-50 to-gray-100',
+    textColor: 'text-gray-900',
+    accentColor: 'bg-gray-900',
+    preview: 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Editorial+Style'
+  },
+  {
+    id: 'four',
+    title: 'Geometric & Architecture',
+    description: 'Mathematical precision meets functional design. Clean geometric forms with architectural principles and blueprint aesthetics.',
+    features: ['Geometric Forms', 'Blueprint View', 'Mathematical Precision', 'Architectural Design'],
+    color: 'from-gray-100 to-gray-200',
+    textColor: 'text-gray-900',
+    accentColor: 'bg-gray-900',
+    preview: 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Geometric+Design'
   }
 ];
 
@@ -199,7 +219,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
             {themes.map((theme, index) => (
               <motion.div
                 key={theme.id}
@@ -344,7 +364,7 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <div className="text-center">
-              <div className="text-4xl font-bold text-gray-900 mb-2">3</div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">5</div>
               <div className="text-gray-600">Unique Themes</div>
             </div>
             <div className="text-center">
