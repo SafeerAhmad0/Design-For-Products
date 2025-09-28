@@ -113,10 +113,23 @@ export default function WarmLifestyleStore() {
           <motion.div
             className="relative"
             initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            animate={isFloating ? { y: [-5, -15, -5], scale: [1, 1.1, 1] } : {}}
-            transition={isFloating ? { duration: 0.6, repeat: 1 } : {}}
+            animate={isFloating ? {
+              x: 0,
+              opacity: 1,
+              y: [-5, -15, -5],
+              scale: [1, 1.1, 1]
+            } : {
+              x: 0,
+              opacity: 1
+            }}
+            transition={isFloating ? {
+              delay: 0.4,
+              duration: 0.6,
+              repeat: 1
+            } : {
+              delay: 0.4,
+              duration: 0.6
+            }}
           >
             <motion.div
               className="flex items-center space-x-3 bg-amber-100 px-4 py-2 rounded-full shadow-lg"
