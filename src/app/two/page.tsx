@@ -271,21 +271,25 @@ export default function BoldPremiumStore() {
                   <motion.h2
                     className="text-7xl font-bold mb-6 text-yellow-400 tracking-widest"
                     initial={{ y: 50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.8 }}
-                    whileHover={{
-                      scale: 1.1,
-                      textShadow: '0 0 40px #FFD700, 0 0 80px #FFD700',
-                      letterSpacing: '0.5em'
-                    }}
                     animate={{
+                      y: 0,
+                      opacity: 1,
                       textShadow: [
                         '0 0 20px #FFD700',
                         '0 0 40px #FFD700, 0 0 60px #FFD700',
                         '0 0 20px #FFD700'
                       ]
                     }}
-                    transition={{ duration: 3, repeat: Infinity }}
+                    transition={{
+                      y: { delay: 0.8, duration: 0.8 },
+                      opacity: { delay: 0.8, duration: 0.8 },
+                      textShadow: { duration: 3, repeat: Infinity }
+                    }}
+                    whileHover={{
+                      scale: 1.1,
+                      textShadow: '0 0 40px #FFD700, 0 0 80px #FFD700',
+                      letterSpacing: '0.5em'
+                    }}
                   >
                     UNLEASH POWER
                   </motion.h2>
