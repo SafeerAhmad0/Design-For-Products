@@ -2,36 +2,28 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
+import { allProducts, featuredProducts, getProductsByCategory, categories } from '@/data/products';
+import Image from 'next/image';
 
 interface Product {
   id: number;
   name: string;
-  description: string;
-  price: string;
-  featured: boolean;
-  rating: number;
-  reviews: number;
+  description?: string;
+  price?: string;
+  rating?: number;
+  reviews?: number;
+  mainImage: string;
+  images: string[];
+  category: string;
 }
 
-const products = [
-  { id: 1, name: "Modern Office Chair", description: "Ergonomic design with premium comfort", price: "$299", featured: true, rating: 4.9, reviews: 234 },
-  { id: 2, name: "Wireless Headphones", description: "Premium sound quality with noise cancellation", price: "$199", featured: false, rating: 4.7, reviews: 189 },
-  { id: 3, name: "Smart Watch", description: "Track your fitness and stay connected", price: "$399", featured: true, rating: 4.8, reviews: 412 },
-  { id: 4, name: "Laptop Stand", description: "Adjustable aluminum laptop stand", price: "$89", featured: false, rating: 4.6, reviews: 98 },
-  { id: 5, name: "Desk Lamp", description: "LED desk lamp with adjustable brightness", price: "$79", featured: false, rating: 4.5, reviews: 76 },
-  { id: 6, name: "Bluetooth Speaker", description: "Portable speaker with crystal clear sound", price: "$149", featured: true, rating: 4.8, reviews: 156 },
-  { id: 7, name: "Mechanical Keyboard", description: "Premium mechanical keyboard for productivity", price: "$179", featured: false, rating: 4.9, reviews: 287 },
-  { id: 8, name: "Monitor Stand", description: "Wooden monitor stand with storage", price: "$69", featured: false, rating: 4.4, reviews: 45 },
-  { id: 9, name: "Phone Case", description: "Protective case with wireless charging support", price: "$39", featured: false, rating: 4.3, reviews: 123 },
-  { id: 10, name: "Coffee Mug", description: "Insulated travel mug keeps drinks hot", price: "$29", featured: false, rating: 4.7, reviews: 89 }
-];
-
-const featuredProducts = products.filter(p => p.featured);
+const products = allProducts;
+const featured = featuredProducts;
 
 const heroImages = [
-  "https://via.placeholder.com/1200x400/f8f9fa/6c757d?text=Premium+Office+Setup",
-  "https://via.placeholder.com/1200x400/e9ecef/495057?text=Modern+Workspace",
-  "https://via.placeholder.com/1200x400/dee2e6/343a40?text=Minimal+Design"
+  featuredProducts[0]?.mainImage || "/products/bedrooms/bedroom15.jpg",
+  featuredProducts[1]?.mainImage || "/products/kitchens/kitchen/k1.jpeg",
+  featuredProducts[2]?.mainImage || "/products/sofas/modern/m1.jpeg"
 ];
 
 export default function PolishedMinimalStore() {
@@ -210,7 +202,7 @@ export default function PolishedMinimalStore() {
 
         <div className="relative">
           <div className="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide">
-            {featuredProducts.map((product, index) => (
+            {featured.map((product, index) => (
               <motion.div
                 key={product.id}
                 className="flex-none w-80 bg-white border border-gray-100 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500"
@@ -223,14 +215,24 @@ export default function PolishedMinimalStore() {
                 onMouseLeave={() => setHoveredProduct(null)}
               >
                 <div className="relative aspect-square bg-gray-50 overflow-hidden">
-                  <motion.div
-                    className="w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(https://via.placeholder.com/320x320/f8f9fa/6c757d?text=${encodeURIComponent(product.name)})` }}
-                    animate={{
-                      scale: hoveredProduct === `featured-${product.id}` ? 1.1 : 1
-                    }}
-                    transition={{ duration: 0.6 }}
-                  />
+                  {/* Theme 1: Clean white background with soft shadow */}
+                  <div className="absolute inset-0 bg-white flex items-center justify-center p-6">
+                    <motion.div
+                      className="relative w-full h-full"
+                      animate={{
+                        scale: hoveredProduct === `featured-${product.id}` ? 1.1 : 1
+                      }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <Image
+                        src={product.mainImage}
+                        alt={product.name}
+                        fill
+                        className="object-contain drop-shadow-xl"
+                        sizes="(max-width: 768px) 100vw, 320px"
+                      />
+                    </motion.div>
+                  </div>
                   <motion.div
                     className="absolute top-2 right-2 bg-gray-900 text-white px-2 py-1 rounded-full text-xs font-medium"
                     initial={{ scale: 0, rotate: -180 }}
@@ -289,7 +291,7 @@ export default function PolishedMinimalStore() {
                         <motion.svg
                           key={i}
                           className={`w-4 h-4 ${
-                            i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'
+                            i < Math.floor(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'
                           }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
@@ -364,15 +366,22 @@ export default function PolishedMinimalStore() {
               onMouseEnter={() => setHoveredProduct(product.id)}
               onMouseLeave={() => setHoveredProduct(null)}
             >
-              <div className="relative aspect-square bg-gray-50 flex items-center justify-center border-b border-gray-100 overflow-hidden">
+              <div className="relative aspect-square bg-white flex items-center justify-center border-b border-gray-100 overflow-hidden p-4">
                 <motion.div
-                  className="w-full h-full bg-cover bg-center"
-                  style={{ backgroundImage: `url(https://via.placeholder.com/300x300/f8f9fa/6c757d?text=${encodeURIComponent(product.name)})` }}
+                  className="relative w-full h-full"
                   animate={{
                     scale: hoveredProduct === product.id ? 1.1 : 1
                   }}
                   transition={{ duration: 0.6 }}
-                />
+                >
+                  <Image
+                    src={product.mainImage}
+                    alt={product.name}
+                    fill
+                    className="object-contain drop-shadow-lg"
+                    sizes="(max-width: 768px) 100vw, 300px"
+                  />
+                </motion.div>
 
                 <AnimatePresence>
                   {hoveredProduct === product.id && (
@@ -423,7 +432,7 @@ export default function PolishedMinimalStore() {
                       <motion.svg
                         key={i}
                         className={`w-3 h-3 ${
-                          i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'
+                          i < Math.floor(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'
                         }`}
                         fill="currentColor"
                         viewBox="0 0 20 20"

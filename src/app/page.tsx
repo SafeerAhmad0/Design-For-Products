@@ -32,7 +32,7 @@ const themes = [
     color: 'from-gray-100 to-gray-200',
     textColor: 'text-gray-900',
     accentColor: 'bg-gray-900',
-    preview: 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Minimal+Design'
+    preview: 'https://via.placeholder.com/400x300/bae6fd/0284c7?text=Minimal+Design'
   },
   {
     id: 'one',
@@ -42,7 +42,7 @@ const themes = [
     color: 'from-amber-50 to-orange-100',
     textColor: 'text-amber-900',
     accentColor: 'bg-amber-600',
-    preview: 'https://via.placeholder.com/400x300/e6d7c3/8b4513?text=Warm+Lifestyle'
+    preview: 'https://via.placeholder.com/400x300/bae6fd/0284c7?text=Warm+Lifestyle'
   },
   {
     id: 'two',
@@ -52,7 +52,7 @@ const themes = [
     color: 'from-gray-900 to-black',
     textColor: 'text-yellow-400',
     accentColor: 'bg-yellow-400',
-    preview: 'https://via.placeholder.com/400x300/1a1a1a/FFD700?text=Bold+Premium'
+    preview: 'https://via.placeholder.com/400x300/bae6fd/0284c7?text=Bold+Premium'
   },
   {
     id: 'three',
@@ -62,7 +62,7 @@ const themes = [
     color: 'from-gray-50 to-gray-100',
     textColor: 'text-gray-900',
     accentColor: 'bg-gray-900',
-    preview: 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Editorial+Style'
+    preview: 'https://via.placeholder.com/400x300/bae6fd/0284c7?text=Editorial+Style'
   },
   {
     id: 'four',
@@ -72,7 +72,7 @@ const themes = [
     color: 'from-gray-100 to-gray-200',
     textColor: 'text-gray-900',
     accentColor: 'bg-gray-900',
-    preview: 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Geometric+Design'
+    preview: 'https://via.placeholder.com/400x300/bae6fd/0284c7?text=Geometric+Design'
   }
 ];
 

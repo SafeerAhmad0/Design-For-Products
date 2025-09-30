@@ -2,35 +2,32 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
+import { allProducts, featuredProducts, getProductsByCategory, categories } from '@/data/products';
+import Image from 'next/image';
 
 interface Product {
   id: number;
   name: string;
-  description: string;
-  price: string;
-  featured: boolean;
-  rating: number;
-  reviews: number;
-  dimension: string;
-  material: string;
-  coordinates: { x: number; y: number };
+  description?: string;
+  price?: string;
+  rating?: number;
+  reviews?: number;
+  mainImage: string;
+  images: string[];
+  category: string;
+  dimension?: string;
+  material?: string;
+  coordinates?: { x: number; y: number };
 }
 
-const products: Product[] = [
-  { id: 1, name: "Hexagonal Shelf System", description: "Modular wall storage with mathematical precision", price: "$189", featured: true, rating: 4.9, reviews: 287, dimension: "40×40×12", material: "Oak", coordinates: { x: 0.1, y: 0.2 } },
-  { id: 2, name: "Triangle Coffee Table", description: "Acute-angled surface with hidden geometry", price: "$449", featured: false, rating: 4.8, reviews: 156, dimension: "120×60×40", material: "Steel", coordinates: { x: 0.7, y: 0.1 } },
-  { id: 3, name: "Cubic Storage Unit", description: "Perfect proportions in three dimensions", price: "$329", featured: true, rating: 4.7, reviews: 203, dimension: "50×50×50", material: "Birch", coordinates: { x: 0.3, y: 0.6 } },
-  { id: 4, name: "Linear Light Series", description: "Illumination following geometric principles", price: "$129", featured: false, rating: 4.6, reviews: 178, dimension: "100×5×5", material: "Aluminum", coordinates: { x: 0.8, y: 0.4 } },
-  { id: 5, name: "Pentagonal Mirror", description: "Five-sided reflection creating infinite space", price: "$219", featured: true, rating: 4.8, reviews: 234, dimension: "60×60×3", material: "Glass", coordinates: { x: 0.2, y: 0.8 } },
-  { id: 6, name: "Rhomboid Bookend", description: "Parallelogram support for vertical libraries", price: "$89", featured: false, rating: 4.5, reviews: 145, dimension: "20×15×25", material: "Concrete", coordinates: { x: 0.6, y: 0.3 } },
-  { id: 7, name: "Cylindrical Planter", description: "Circular growth in architectural form", price: "$149", featured: false, rating: 4.4, reviews: 167, dimension: "35×35×40", material: "Ceramic", coordinates: { x: 0.9, y: 0.7 } },
-  { id: 8, name: "Trapezoidal Stool", description: "Four-sided seating with angular precision", price: "$179", featured: false, rating: 4.7, reviews: 198, dimension: "40×30×45", material: "Walnut", coordinates: { x: 0.4, y: 0.5 } },
-  { id: 9, name: "Octagonal Clock", description: "Eight-sided time in geometric harmony", price: "$99", featured: false, rating: 4.3, reviews: 134, dimension: "30×30×5", material: "Metal", coordinates: { x: 0.1, y: 0.9 } },
-  { id: 10, name: "Dodecagon Vase", description: "Twelve-sided vessel for organic display", price: "$159", featured: false, rating: 4.6, reviews: 189, dimension: "25×25×35", material: "Porcelain", coordinates: { x: 0.5, y: 0.1 } }
-];
-
-const featuredProducts = products.filter(p => p.featured);
-const materials = [...new Set(products.map(p => p.material))];
+const products: Product[] = allProducts.map((p, i) => ({
+  ...p,
+  dimension: "40×40×12",
+  material: p.category,
+  coordinates: { x: (i * 0.13) % 1, y: ((i * 0.23) % 1) }
+}));
+const featured = featuredProducts;
+const materials = categories;
 
 const heroShapes = [
   { type: 'triangle', size: 100, x: '10%', y: '20%', rotation: 0 },
@@ -351,7 +348,7 @@ export default function GeometricArchitectureStore() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {featuredProducts.map((product, index) => (
+            {featured.map((product, index) => (
               <motion.div
                 key={product.id}
                 className="group cursor-pointer"
@@ -363,14 +360,30 @@ export default function GeometricArchitectureStore() {
                 onMouseLeave={() => setHoveredProduct(null)}
               >
                 <div className="relative aspect-square mb-6 overflow-hidden border border-gray-100">
+                  {/* Theme 4: Geometric pattern overlay background */}
+                  <div className="absolute inset-0 bg-white"></div>
+                  <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                      backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px), repeating-linear-gradient(-45deg, transparent, transparent 10px, #000 10px, #000 20px)',
+                      backgroundSize: '20px 20px'
+                    }}
+                  ></div>
                   <motion.div
-                    className="w-full h-full bg-cover bg-center relative"
-                    style={{ backgroundImage: `url(https://via.placeholder.com/400x400/f8f9fa/6c757d?text=${encodeURIComponent(product.name)})` }}
+                    className="relative w-full h-full flex items-center justify-center p-8"
                     animate={{
                       scale: hoveredProduct === product.id ? 1.05 : 1
                     }}
                     transition={{ duration: 0.6 }}
-                  />
+                  >
+                    <Image
+                      src={product.mainImage}
+                      alt={product.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                  </motion.div>
 
                   {/* Technical Overlay */}
                   <motion.div
@@ -393,10 +406,10 @@ export default function GeometricArchitectureStore() {
                       <div className="text-xs tracking-[0.2em] mb-4 text-gray-500">SPECIFICATIONS</div>
                       <div className="space-y-2 mb-6">
                         <div className="text-sm">
-                          <span className="text-gray-500">DIMENSIONS:</span> {product.dimension}cm
+                          <span className="text-gray-500">DIMENSIONS:</span> {product.dimension || "40×40×12"}cm
                         </div>
                         <div className="text-sm">
-                          <span className="text-gray-500">MATERIAL:</span> {product.material}
+                          <span className="text-gray-500">CATEGORY:</span> {product.category}
                         </div>
                         <div className="text-sm">
                           <span className="text-gray-500">PRICE:</span> {product.price}
@@ -415,7 +428,7 @@ export default function GeometricArchitectureStore() {
 
                   {/* Corner Coordinates */}
                   <div className="absolute top-2 left-2 text-xs text-gray-400 font-mono">
-                    {product.coordinates.x.toFixed(2)}, {product.coordinates.y.toFixed(2)}
+                    {product.coordinates?.x.toFixed(2)}, {product.coordinates?.y.toFixed(2)}
                   </div>
                 </div>
 
@@ -427,7 +440,7 @@ export default function GeometricArchitectureStore() {
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="text-xs tracking-[0.2em] text-gray-500 uppercase">
-                      {product.material}
+                      {product.category}
                     </div>
                     <div className="text-lg font-light text-gray-900">{product.price}</div>
                   </div>
@@ -438,7 +451,7 @@ export default function GeometricArchitectureStore() {
                     {product.description}
                   </p>
                   <div className="text-xs text-gray-400 font-mono">
-                    {product.dimension}cm × {product.material}
+                    {product.dimension || "40×40×12"}cm × {product.category}
                   </div>
                 </motion.div>
               </motion.div>
@@ -521,14 +534,29 @@ export default function GeometricArchitectureStore() {
                     onMouseLeave={() => setHoveredProduct(null)}
                     layout
                   >
+                    <div className="absolute inset-0 bg-white"></div>
+                    <div
+                      className="absolute inset-0 opacity-10"
+                      style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px), repeating-linear-gradient(-45deg, transparent, transparent 10px, #000 10px, #000 20px)',
+                        backgroundSize: '20px 20px'
+                      }}
+                    ></div>
                     <motion.div
-                      className="w-full h-full bg-cover bg-center"
-                      style={{ backgroundImage: `url(https://via.placeholder.com/300x300/f8f9fa/6c757d?text=${encodeURIComponent(product.name)})` }}
+                      className="relative w-full h-full"
                       animate={{
                         scale: hoveredProduct === product.id ? 1.1 : 1
                       }}
                       transition={{ duration: 0.6 }}
-                    />
+                    >
+                      <Image
+                        src={product.mainImage}
+                        alt={product.name}
+                        fill
+                        className="object-contain p-4"
+                        sizes="(max-width: 768px) 100vw, 300px"
+                      />
+                    </motion.div>
                     <motion.div
                       className="absolute inset-0 bg-white bg-opacity-90 flex flex-col justify-center items-center text-center p-4"
                       initial={{ opacity: 0 }}
@@ -566,8 +594,8 @@ export default function GeometricArchitectureStore() {
                       key={product.id}
                       className="absolute w-16 h-16 border-2 border-gray-400 cursor-pointer flex items-center justify-center bg-white hover:bg-gray-50 transition-colors"
                       style={{
-                        left: `${product.coordinates.x * 100}%`,
-                        top: `${product.coordinates.y * 100}%`
+                        left: `${(product.coordinates?.x || 0) * 100}%`,
+                        top: `${(product.coordinates?.y || 0) * 100}%`
                       }}
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -587,10 +615,10 @@ export default function GeometricArchitectureStore() {
                           >
                             <h3 className="text-sm font-light text-gray-900 mb-2">{product.name}</h3>
                             <div className="text-xs text-gray-500 mb-2">
-                              Dimensions: {product.dimension}cm
+                              Dimensions: {product.dimension || "40×40×12"}cm
                             </div>
                             <div className="text-xs text-gray-500 mb-2">
-                              Material: {product.material}
+                              Category: {product.category}
                             </div>
                             <div className="text-lg font-light text-gray-900 mb-3">{product.price}</div>
                             <motion.button

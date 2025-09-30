@@ -2,17 +2,19 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform, useAnimation } from 'framer-motion';
+import { allProducts, featuredProducts, getProductsByCategory, categories } from '@/data/products';
+import Image from 'next/image';
 
 interface Product {
   id: number;
   name: string;
-  description: string;
-  price: string;
-  featured: boolean;
-  rating: number;
-  reviews: number;
-  tier: string;
-  specs: string;
+  description?: string;
+  price?: string;
+  rating?: number;
+  reviews?: number;
+  mainImage: string;
+  images: string[];
+  category: string;
 }
 
 interface MousePosition {
@@ -20,26 +22,14 @@ interface MousePosition {
   y: number;
 }
 
-const products = [
-  { id: 1, name: "Elite Gaming Setup", description: "Professional gaming workstation with RGB lighting", price: "$2,499", featured: true, rating: 4.9, reviews: 1247, tier: "ELITE", specs: "RTX 4090 | 64GB RAM | 2TB SSD" },
-  { id: 2, name: "Titanium Smartwatch", description: "Premium wearable with advanced health monitoring", price: "$899", featured: false, rating: 4.8, reviews: 892, tier: "PRO", specs: "7-day battery | GPS | Health sensors" },
-  { id: 3, name: "Carbon Fiber Laptop", description: "Ultra-lightweight with maximum performance", price: "$3,299", featured: true, rating: 4.9, reviews: 567, tier: "ELITE", specs: "M3 Max | 128GB RAM | 8TB SSD" },
-  { id: 4, name: "Studio Monitor Speakers", description: "Professional-grade audio for creators", price: "$1,599", featured: false, rating: 4.7, reviews: 234, tier: "PRO", specs: "Hi-Res Audio | Active monitors | Studio grade" },
-  { id: 5, name: "Mechanical Masterpiece", description: "Handcrafted keyboard with custom switches", price: "$499", featured: true, rating: 4.8, reviews: 789, tier: "PRO", specs: "Custom switches | RGB | Wireless" },
-  { id: 6, name: "4K Webcam Pro", description: "Crystal clear video for professional streaming", price: "$349", featured: false, rating: 4.6, reviews: 445, tier: "STANDARD", specs: "4K 60fps | Auto focus | HDR" },
-  { id: 7, name: "Wireless Charging Pad", description: "Fast charging with sleek aluminum design", price: "$129", featured: false, rating: 4.5, reviews: 678, tier: "STANDARD", specs: "15W fast charge | Aluminum | Qi certified" },
-  { id: 8, name: "Noise-Canceling Headset", description: "Industry-leading audio technology", price: "$449", featured: false, rating: 4.7, reviews: 923, tier: "PRO", specs: "40hr battery | ANC | Hi-Res Audio" },
-  { id: 9, name: "Smart Home Hub", description: "Control your entire smart home ecosystem", price: "$299", featured: false, rating: 4.4, reviews: 356, tier: "STANDARD", specs: "Matter support | Voice control | 100+ devices" },
-  { id: 10, name: "Premium Phone Case", description: "Military-grade protection with style", price: "$89", featured: false, rating: 4.3, reviews: 1123, tier: "STANDARD", specs: "Drop test 12ft | Wireless charging | Carbon fiber" }
-];
-
-const featuredProducts = products.filter(p => p.featured);
-const tiers = ['ELITE', 'PRO', 'STANDARD'];
+const products = allProducts;
+const featured = featuredProducts;
+const tiers = categories;
 
 const heroImages = [
-  "https://via.placeholder.com/1200x400/000000/FFD700?text=Premium+Tech+Collection",
-  "https://via.placeholder.com/1200x400/1a1a1a/00FFFF?text=Next-Gen+Innovation",
-  "https://via.placeholder.com/1200x400/111111/FF6B35?text=Elite+Performance"
+  featuredProducts[0]?.mainImage || "/products/bedrooms/bedroom15.jpg",
+  featuredProducts[1]?.mainImage || "/products/kitchens/kitchen/k1.jpeg",
+  featuredProducts[2]?.mainImage || "/products/sofas/modern/m1.jpeg"
 ];
 
 export default function BoldPremiumStore() {
@@ -71,7 +61,7 @@ export default function BoldPremiumStore() {
 
   const filteredProducts = selectedTier === 'ALL'
     ? products
-    : products.filter(p => p.tier === selectedTier);
+    : products.filter(p => p.category === selectedTier);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -544,7 +534,7 @@ export default function BoldPremiumStore() {
             drag="x"
             dragConstraints={{ left: -1200, right: 0 }}
           >
-            {featuredProducts.map((product, index) => (
+            {featured.map((product, index) => (
               <motion.div
                 key={product.id}
                 className="flex-none w-[500px] bg-gray-900 border border-gray-700 hover:border-yellow-400 transition-all duration-700 overflow-hidden relative"
@@ -574,18 +564,25 @@ export default function BoldPremiumStore() {
 
                 <div className="flex h-80">
                   <div className="w-1/2 relative overflow-hidden">
+                    {/* Theme 5: Dark background with spotlight effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900"></div>
+                    <div className="absolute inset-0 bg-gradient-radial from-white/20 via-transparent to-transparent"></div>
                     <motion.div
-                      className="w-full h-full bg-cover bg-center"
-                      style={{
-                        backgroundImage: `url(https://via.placeholder.com/400x400/1a1a1a/FFD700?text=${encodeURIComponent(product.name)})`,
-                        filter: 'brightness(1.1) contrast(1.3)'
-                      }}
+                      className="relative w-full h-full"
                       animate={{
                         scale: hoveredProduct === `featured-${product.id}` ? 1.2 : 1,
                         rotate: hoveredProduct === `featured-${product.id}` ? 5 : 0
                       }}
                       transition={{ duration: 0.8 }}
-                    />
+                    >
+                      <Image
+                        src={product.mainImage}
+                        alt={product.name}
+                        fill
+                        className="object-contain brightness-110 contrast-125"
+                        sizes="(max-width: 768px) 100vw, 400px"
+                      />
+                    </motion.div>
 
                     <motion.div
                       className="absolute inset-0 bg-black bg-opacity-30"
@@ -603,7 +600,7 @@ export default function BoldPremiumStore() {
                       transition={{ delay: 0.5 + index * 0.1, type: "spring", stiffness: 200 }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      {product.tier}
+                      {product.category}
                     </motion.div>
 
                     <motion.div
@@ -650,7 +647,7 @@ export default function BoldPremiumStore() {
                           <motion.svg
                             key={i}
                             className={`w-5 h-5 ${
-                              i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-600'
+                              i < Math.floor(product.rating || 0) ? 'text-yellow-400' : 'text-gray-600'
                             }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -677,13 +674,13 @@ export default function BoldPremiumStore() {
                     </motion.p>
 
                     <motion.p
-                      className="text-yellow-400 mb-6 text-xs font-bold tracking-widest"
+                      className="text-yellow-400 mb-6 text-xs font-bold tracking-widest uppercase"
                       animate={{
                         x: hoveredProduct === `featured-${product.id}` ? 10 : 0
                       }}
                       transition={{ duration: 0.3, delay: 0.25 }}
                     >
-                      {product.specs}
+                      {product.category}
                     </motion.p>
 
                     <motion.div
@@ -852,18 +849,24 @@ export default function BoldPremiumStore() {
 
                 <div className="flex h-80">
                   <div className="w-1/2 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900"></div>
+                    <div className="absolute inset-0 bg-gradient-radial from-white/20 via-transparent to-transparent"></div>
                     <motion.div
-                      className="w-full h-full bg-cover bg-center"
-                      style={{
-                        backgroundImage: `url(https://via.placeholder.com/400x400/1a1a1a/FFD700?text=${encodeURIComponent(product.name)})`,
-                        filter: 'brightness(1.1) contrast(1.3)'
-                      }}
+                      className="relative w-full h-full"
                       animate={{
                         scale: hoveredProduct === product.id ? 1.2 : 1,
                         rotate: hoveredProduct === product.id ? 5 : 0
                       }}
                       transition={{ duration: 0.8 }}
-                    />
+                    >
+                      <Image
+                        src={product.mainImage}
+                        alt={product.name}
+                        fill
+                        className="object-contain brightness-110 contrast-125"
+                        sizes="(max-width: 768px) 100vw, 400px"
+                      />
+                    </motion.div>
 
                     <motion.div
                       className="absolute inset-0 bg-black bg-opacity-30"
@@ -874,14 +877,14 @@ export default function BoldPremiumStore() {
                     />
 
                     <motion.div
-                      className="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 font-bold text-sm tracking-widest"
+                      className="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 font-bold text-sm tracking-widest uppercase"
                       style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)' }}
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ delay: 0.3 + index * 0.1, type: "spring", stiffness: 200 }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      {product.tier}
+                      {product.category}
                     </motion.div>
 
                     <motion.div
@@ -953,7 +956,7 @@ export default function BoldPremiumStore() {
                           <motion.svg
                             key={i}
                             className={`w-4 h-4 ${
-                              i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-600'
+                              i < Math.floor(product.rating || 0) ? 'text-yellow-400' : 'text-gray-600'
                             }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -980,13 +983,13 @@ export default function BoldPremiumStore() {
                     </motion.p>
 
                     <motion.p
-                      className="text-yellow-400 mb-6 text-xs font-bold tracking-widest"
+                      className="text-yellow-400 mb-6 text-xs font-bold tracking-widest uppercase"
                       animate={{
                         x: hoveredProduct === product.id ? 10 : 0
                       }}
                       transition={{ duration: 0.3, delay: 0.25 }}
                     >
-                      {product.specs}
+                      {product.category}
                     </motion.p>
 
                     <motion.div

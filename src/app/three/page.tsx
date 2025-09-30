@@ -2,39 +2,30 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
+import { allProducts, featuredProducts, getProductsByCategory, categories as productCategories } from '@/data/products';
+import Image from 'next/image';
 
 interface Product {
   id: number;
   name: string;
-  description: string;
-  price: string;
-  featured: boolean;
-  rating: number;
-  reviews: number;
+  description?: string;
+  price?: string;
+  rating?: number;
+  reviews?: number;
+  mainImage: string;
+  images: string[];
   category: string;
-  size: 'large' | 'medium' | 'small';
+  size?: 'large' | 'medium' | 'small';
 }
 
-const products: Product[] = [
-  { id: 1, name: "Architectural Vase", description: "Sculptural ceramic piece inspired by brutalist architecture", price: "$189", featured: true, rating: 4.8, reviews: 234, category: "decor", size: "large" },
-  { id: 2, name: "Minimalist Clock", description: "Time piece that disappears into your space", price: "$129", featured: false, rating: 4.7, reviews: 156, category: "decor", size: "medium" },
-  { id: 3, name: "Geometric Planter", description: "Angular form meets organic function", price: "$79", featured: true, rating: 4.9, reviews: 289, category: "garden", size: "medium" },
-  { id: 4, name: "Abstract Bookend", description: "Functional sculpture for your library", price: "$95", featured: false, rating: 4.6, reviews: 178, category: "office", size: "small" },
-  { id: 5, name: "Linear Light Fixture", description: "Illumination as architectural element", price: "$349", featured: true, rating: 4.8, reviews: 145, category: "lighting", size: "large" },
-  { id: 6, name: "Modular Storage", description: "Stackable geometry for organized living", price: "$159", featured: false, rating: 4.5, reviews: 203, category: "storage", size: "medium" },
-  { id: 7, name: "Floating Shelf", description: "Invisible support, maximum impact", price: "$69", featured: false, rating: 4.4, reviews: 167, category: "storage", size: "small" },
-  { id: 8, name: "Sculptural Mirror", description: "Reflection through artistic lens", price: "$229", featured: false, rating: 4.7, reviews: 198, category: "decor", size: "medium" },
-  { id: 9, name: "Concrete Candleholder", description: "Industrial beauty meets intimate light", price: "$45", featured: false, rating: 4.3, reviews: 134, category: "decor", size: "small" },
-  { id: 10, name: "Textile Wall Art", description: "Fabric as architectural material", price: "$275", featured: false, rating: 4.6, reviews: 112, category: "art", size: "large" }
-];
-
-const featuredProducts = products.filter(p => p.featured);
-const categories = [...new Set(products.map(p => p.category))];
+const products: Product[] = allProducts.map(p => ({ ...p, size: p.id % 3 === 0 ? 'large' : p.id % 2 === 0 ? 'medium' : 'small' as 'large' | 'medium' | 'small' }));
+const featured = featuredProducts;
+const categories = productCategories;
 
 const heroImages = [
-  "https://via.placeholder.com/1400x600/f8f9fa/6c757d?text=Editorial+Design+Collection",
-  "https://via.placeholder.com/1400x600/e9ecef/495057?text=Curated+Modern+Living",
-  "https://via.placeholder.com/1400x600/dee2e6/343a40?text=Minimal+Aesthetic"
+  featuredProducts[0]?.mainImage || "/products/bedrooms/bedroom15.jpg",
+  featuredProducts[1]?.mainImage || "/products/kitchens/kitchen/k1.jpeg",
+  featuredProducts[2]?.mainImage || "/products/sofas/modern/m1.jpeg"
 ];
 
 export default function MagazineEditorialStore() {
@@ -69,7 +60,7 @@ export default function MagazineEditorialStore() {
     return () => clearInterval(timer);
   }, []);
 
-  const getMasonryClass = (index: number, size: string) => {
+  const getMasonryClass = (index: number, size?: string) => {
     const patterns = [
       'col-span-2 row-span-2', // large
       'col-span-1 row-span-1', // small
@@ -289,7 +280,7 @@ export default function MagazineEditorialStore() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {featuredProducts.map((product, index) => (
+            {featured.map((product, index) => (
               <motion.article
                 key={product.id}
                 className="group cursor-pointer"
@@ -301,14 +292,24 @@ export default function MagazineEditorialStore() {
                 onMouseLeave={() => setHoveredProduct(null)}
               >
                 <div className="relative aspect-[4/5] mb-6 overflow-hidden">
+                  {/* Theme 3: Light gray editorial background with vignette */}
+                  <div className="absolute inset-0 bg-gray-100"></div>
+                  <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-gray-300/50"></div>
                   <motion.div
-                    className="w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(https://via.placeholder.com/400x500/f8f9fa/6c757d?text=${encodeURIComponent(product.name)})` }}
+                    className="relative w-full h-full flex items-center justify-center p-8"
                     animate={{
                       scale: hoveredProduct === product.id ? 1.05 : 1
                     }}
                     transition={{ duration: 0.8 }}
-                  />
+                  >
+                    <Image
+                      src={product.mainImage}
+                      alt={product.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                  </motion.div>
                   <motion.div
                     className="absolute inset-0 bg-black"
                     initial={{ opacity: 0 }}
@@ -445,45 +446,53 @@ export default function MagazineEditorialStore() {
                   onMouseLeave={() => setHoveredProduct(null)}
                   layout
                 >
+                  <div className="absolute inset-0 bg-gray-100"></div>
+                  <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-gray-300/50"></div>
                   <motion.div
-                    className="w-full h-full bg-cover bg-center relative"
-                    style={{ backgroundImage: `url(https://via.placeholder.com/400x400/f8f9fa/6c757d?text=${encodeURIComponent(product.name)})` }}
+                    className="relative w-full h-full"
                     animate={{
                       scale: hoveredProduct === product.id ? 1.02 : 1
                     }}
                     transition={{ duration: 0.6 }}
                   >
+                    <Image
+                      src={product.mainImage}
+                      alt={product.name}
+                      fill
+                      className="object-contain p-6"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                  </motion.div>
+                  <motion.div
+                    className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"
+                    initial={{ opacity: 0 }}
+                    animate={{
+                      opacity: hoveredProduct === product.id ? 1 : 0
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <motion.div
-                      className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"
-                      initial={{ opacity: 0 }}
+                      className="text-center text-white"
+                      initial={{ y: 20, opacity: 0 }}
                       animate={{
+                        y: hoveredProduct === product.id ? 0 : 20,
                         opacity: hoveredProduct === product.id ? 1 : 0
                       }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
                     >
-                      <motion.div
-                        className="text-center text-white"
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{
-                          y: hoveredProduct === product.id ? 0 : 20,
-                          opacity: hoveredProduct === product.id ? 1 : 0
-                        }}
-                        transition={{ duration: 0.3, delay: 0.1 }}
+                      <div className="text-xs tracking-[0.2em] mb-2 uppercase opacity-80">
+                        {product.category}
+                      </div>
+                      <h3 className="text-lg font-light mb-2">{product.name}</h3>
+                      <div className="text-xl font-normal mb-4">{product.price}</div>
+                      <motion.button
+                        className="border border-white px-6 py-2 text-xs tracking-widest hover:bg-white hover:text-black transition-all duration-300"
+                        onClick={() => addToCart(product)}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
-                        <div className="text-xs tracking-[0.2em] mb-2 uppercase opacity-80">
-                          {product.category}
-                        </div>
-                        <h3 className="text-lg font-light mb-2">{product.name}</h3>
-                        <div className="text-xl font-normal mb-4">{product.price}</div>
-                        <motion.button
-                          className="border border-white px-6 py-2 text-xs tracking-widest hover:bg-white hover:text-black transition-all duration-300"
-                          onClick={() => addToCart(product)}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          ADD TO CART
-                        </motion.button>
-                      </motion.div>
+                        ADD TO CART
+                      </motion.button>
                     </motion.div>
                   </motion.div>
                 </motion.div>

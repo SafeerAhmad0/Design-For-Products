@@ -2,38 +2,29 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
+import { allProducts, featuredProducts, getProductsByCategory, categories as productCategories } from '@/data/products';
+import Image from 'next/image';
 
 interface Product {
   id: number;
   name: string;
-  description: string;
-  price: string;
-  featured: boolean;
-  rating: number;
-  reviews: number;
+  description?: string;
+  price?: string;
+  rating?: number;
+  reviews?: number;
+  mainImage: string;
+  images: string[];
   category: string;
 }
 
-const products = [
-  { id: 1, name: "Cozy Reading Chair", description: "Perfect for your favorite corner", price: "$349", featured: true, rating: 4.9, reviews: 156, category: "furniture" },
-  { id: 2, name: "Wooden Coffee Table", description: "Handcrafted from sustainable oak", price: "$289", featured: false, rating: 4.8, reviews: 89, category: "furniture" },
-  { id: 3, name: "Ceramic Plant Pot", description: "Bring nature indoors with style", price: "$45", featured: true, rating: 4.6, reviews: 234, category: "decor" },
-  { id: 4, name: "Soft Throw Blanket", description: "Ultra-soft merino wool blend", price: "$89", featured: false, rating: 4.7, reviews: 145, category: "textiles" },
-  { id: 5, name: "Vintage Floor Lamp", description: "Warm ambient lighting for any room", price: "$159", featured: true, rating: 4.8, reviews: 98, category: "lighting" },
-  { id: 6, name: "Artisan Candle Set", description: "Hand-poured soy candles with natural scents", price: "$39", featured: false, rating: 4.5, reviews: 267, category: "decor" },
-  { id: 7, name: "Bamboo Serving Tray", description: "Eco-friendly and beautifully crafted", price: "$29", featured: false, rating: 4.4, reviews: 76, category: "kitchenware" },
-  { id: 8, name: "Linen Cushion Cover", description: "Natural texture meets comfort", price: "$24", featured: false, rating: 4.6, reviews: 123, category: "textiles" },
-  { id: 9, name: "Cork Coaster Set", description: "Protect your surfaces in style", price: "$19", featured: false, rating: 4.3, reviews: 54, category: "kitchenware" },
-  { id: 10, name: "Macrame Wall Hanging", description: "Bohemian charm for your walls", price: "$55", featured: false, rating: 4.7, reviews: 87, category: "decor" }
-];
-
-const featuredProducts = products.filter(p => p.featured);
-const categories = [...new Set(products.map(p => p.category))];
+const products = allProducts;
+const featured = featuredProducts;
+const categories = productCategories;
 
 const heroImages = [
-  "https://via.placeholder.com/1200x400/d4b89a/8b4513?text=Cozy+Living+Room",
-  "https://via.placeholder.com/1200x400/e6d7c3/a0522d?text=Natural+Materials",
-  "https://via.placeholder.com/1200x400/f5e6d3/cd853f?text=Warm+Atmosphere"
+  featuredProducts[0]?.mainImage || "/products/bedrooms/bedroom15.jpg",
+  featuredProducts[1]?.mainImage || "/products/kitchens/kitchen/k1.jpeg",
+  featuredProducts[2]?.mainImage || "/products/sofas/modern/m1.jpeg"
 ];
 
 export default function WarmLifestyleStore() {
@@ -322,7 +313,7 @@ export default function WarmLifestyleStore() {
             drag="x"
             dragConstraints={{ left: -800, right: 0 }}
           >
-            {featuredProducts.map((product, index) => (
+            {featured.map((product, index) => (
               <motion.div
                 key={product.id}
                 className="flex-none w-96 bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500"
@@ -335,18 +326,25 @@ export default function WarmLifestyleStore() {
                 onMouseEnter={() => setHoveredProduct(`featured-${product.id}`)}
                 onMouseLeave={() => setHoveredProduct(null)}
               >
-                <div className="relative aspect-square bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden p-8">
+                <div className="relative aspect-square overflow-hidden p-8">
+                  {/* Theme 2: Warm beige/cream gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50"></div>
                   <motion.div
-                    className="w-full h-full bg-cover bg-center rounded-2xl shadow-lg"
-                    style={{
-                      backgroundImage: `url(https://via.placeholder.com/320x320/e6d7c3/8b4513?text=${encodeURIComponent(product.name)})`,
-                    }}
+                    className="relative w-full h-full rounded-2xl shadow-lg overflow-hidden"
                     animate={{
                       scale: hoveredProduct === `featured-${product.id}` ? 1.1 : 1,
                       rotate: hoveredProduct === `featured-${product.id}` ? 2 : 0
                     }}
                     transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
-                  />
+                  >
+                    <Image
+                      src={product.mainImage}
+                      alt={product.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 320px"
+                    />
+                  </motion.div>
 
                   <motion.div
                     className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg"
@@ -407,7 +405,7 @@ export default function WarmLifestyleStore() {
                         <motion.svg
                           key={i}
                           className={`w-5 h-5 ${
-                            i < Math.floor(product.rating) ? 'text-yellow-500' : 'text-gray-300'
+                            i < Math.floor(product.rating || 0) ? 'text-yellow-500' : 'text-gray-300'
                           }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
@@ -545,18 +543,24 @@ export default function WarmLifestyleStore() {
                 onMouseLeave={() => setHoveredProduct(null)}
                 layout
               >
-                <div className="relative aspect-square bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden p-6">
+                <div className="relative aspect-square overflow-hidden p-6">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50"></div>
                   <motion.div
-                    className="w-full h-full bg-cover bg-center rounded-2xl shadow-lg"
-                    style={{
-                      backgroundImage: `url(https://via.placeholder.com/280x280/e6d7c3/8b4513?text=${encodeURIComponent(product.name)})`,
-                    }}
+                    className="relative w-full h-full rounded-2xl shadow-lg overflow-hidden"
                     animate={{
                       scale: hoveredProduct === product.id ? 1.1 : 1,
                       rotate: hoveredProduct === product.id ? 3 : 0
                     }}
                     transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-                  />
+                  >
+                    <Image
+                      src={product.mainImage}
+                      alt={product.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 280px"
+                    />
+                  </motion.div>
 
                   <motion.div
                     className="absolute top-3 left-3 bg-amber-600 text-white px-2 py-1 rounded-full text-xs font-semibold capitalize"
@@ -617,7 +621,7 @@ export default function WarmLifestyleStore() {
                         <motion.svg
                           key={i}
                           className={`w-4 h-4 ${
-                            i < Math.floor(product.rating) ? 'text-yellow-500' : 'text-gray-300'
+                            i < Math.floor(product.rating || 0) ? 'text-yellow-500' : 'text-gray-300'
                           }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
